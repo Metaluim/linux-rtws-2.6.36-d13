@@ -1,0 +1,10 @@
+WARNING: modpost: Found 4 section mismatch(es).
+To see full details build your kernel with:
+'make CONFIG_DEBUG_SECTION_MISMATCH=y'
+kernel/built-in.o: In function `free_event':
+/home/ricardo/source/2.6.36-rtws+dl3/kernel/perf_event.c:2177: undefined reference to `irq_work_sync'
+kernel/built-in.o: In function `perf_output_wakeup':
+/home/ricardo/source/2.6.36-rtws+dl3/kernel/perf_event.c:3192: undefined reference to `irq_work_queue'
+kernel/built-in.o: In function `__perf_event_overflow':
+/home/ricardo/source/2.6.36-rtws+dl3/kernel/perf_event.c:4228: undefined reference to `irq_work_queue'
+make: *** [.tmp_vmlinux1] Error 1
