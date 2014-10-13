@@ -638,11 +638,17 @@ retry:
 
 	/* We might release rq lock */
 	get_task_struct(p);
-			
-	double_lock_balance(this_rq, target_rq);
+
+	if (this_rq != target_rq)
+		double_lock_balance(this_rq, target_rq);
+	else
+		raw_spin_lock(&this_rq->lock);
 
 	if (unlikely(target_rq->rtws.nr_running)) {
-		double_unlock_balance(this_rq, target_rq);
+		if (this_rq != target_rq)
+			double_unlock_balance(this_rq, target_rq);
+		else
+			raw_spin_unlock(&this_rq->lock);
 		put_task_struct(p);
 		target_rq = NULL;
 		goto retry;
@@ -660,7 +666,10 @@ retry:
 	ret = 1;
 	resched_task(target_rq->curr);
 
-	double_unlock_balance(this_rq, target_rq);	
+	if (this_rq != target_rq)
+		double_unlock_balance(this_rq, target_rq);	
+	else
+		raw_spin_unlock(&this_rq->lock);
 	put_task_struct(p);
 
 	return ret;
